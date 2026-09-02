@@ -1,0 +1,6 @@
+{
+  "name": "OpsPulse",
+  "description": "Internal team operations, project tracking, task execution board, and centralized file asset workspace.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

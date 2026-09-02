@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #E4E3E0;
+    color: #141414;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Custom scrollbar for technical dashboard aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #E4E3E0;
+}
+::-webkit-scrollbar-thumb {
+  background: #141414;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #333333;
+}
