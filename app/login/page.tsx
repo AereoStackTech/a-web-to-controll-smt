@@ -6,16 +6,26 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Lock, Mail, ArrowRight, Loader2, AlertCircle, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 function LoginFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const { t } = useLanguage();
 
   const [email, setEmail] = useState("admin@opspulse.internal");
   const [password, setPassword] = useState("Password123!");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const errorQuery = searchParams.get("error");
+  const initialError =
+    errorQuery === "CredentialsSignin"
+      ? "Invalid work email or password."
+      : errorQuery && errorQuery !== "Configuration"
+      ? `Authentication issue: ${errorQuery}`
+      : null;
+  const [error, setError] = useState<string | null>(initialError);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,14 +56,22 @@ function LoginFormContent() {
   };
 
   return (
-    <div className="w-full max-w-md space-y-6">
+    <div className="w-full max-w-md space-y-6 relative">
+      {/* Top Language Switcher Bar on Login Page */}
+      <div className="flex items-center justify-between pb-1">
+        <div className="font-mono text-[10px] text-[#141414]/60 tracking-wider uppercase">
+          SYS://LOGIN-PORTAL
+        </div>
+        <LanguageSwitcher variant="default" />
+      </div>
+
       {/* Brand Header */}
       <div className="text-center space-y-2">
         <div className="inline-block border border-[#141414] bg-[#141414] text-[#E4E3E0] px-4 py-2 mb-2">
           <span className="text-2xl font-bold tracking-tighter uppercase italic text-[#E4E3E0]">OpsPulse</span>
         </div>
         <h1 className="text-xs font-mono font-bold tracking-widest uppercase text-[#141414]">
-          INTERNAL ENTERPRISE OPERATIONS CONSOLE
+          {t("loginSubtitle", "INTERNAL ENTERPRISE OPERATIONS CONSOLE")}
         </h1>
       </div>
 
@@ -61,24 +79,24 @@ function LoginFormContent() {
       <div className="border border-[#141414] bg-white p-6 sm:p-8 space-y-5 shadow-sm">
         <div className="border-b border-[#141414] pb-3">
           <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[#141414]">
-            AUTHENTICATE WORKSPACE SESSION
+            {t("authCardHeader", "AUTHENTICATE WORKSPACE SESSION")}
           </h2>
           <p className="text-xs text-[#141414]/60 mt-0.5">
-            Enter enterprise credentials to access operational resources.
+            {t("authCardDescription", "Enter enterprise credentials to access operational resources.")}
           </p>
         </div>
 
         {error && (
           <div className="p-3 border border-red-600 bg-red-50 text-red-700 text-xs font-mono flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
-            <span>{error}</span>
+            <span>{error === "Invalid work email or password." ? t("invalidCredentials") : error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#141414]">
-              WORK EMAIL
+              {t("workEmail", "WORK EMAIL")}
             </label>
             <div className="relative">
               <Mail className="w-4 h-4 absolute left-3 top-2.5 text-[#141414]/40" />
@@ -95,7 +113,7 @@ function LoginFormContent() {
 
           <div className="space-y-1.5">
             <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#141414]">
-              PASSWORD
+              {t("password", "PASSWORD")}
             </label>
             <div className="relative">
               <Lock className="w-4 h-4 absolute left-3 top-2.5 text-[#141414]/40" />
@@ -118,11 +136,11 @@ function LoginFormContent() {
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                VERIFYING SESSION...
+                {t("verifyingSession", "VERIFYING SESSION...")}
               </>
             ) : (
               <>
-                ENTER WORKSPACE <ArrowRight className="w-4 h-4 ml-1" />
+                {t("enterWorkspace", "ENTER WORKSPACE")} <ArrowRight className="w-4 h-4 ml-1" />
               </>
             )}
           </Button>
@@ -132,7 +150,7 @@ function LoginFormContent() {
         <div className="pt-4 border-t border-[#141414]/20 space-y-2">
           <div className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-[#141414]/60">
             <ShieldCheck className="w-3.5 h-3.5 text-[#F27D26]" />
-            <span>TEST CREDENTIAL PRESETS</span>
+            <span>{t("testPresets", "TEST CREDENTIAL PRESETS")}</span>
           </div>
 
           <div className="grid grid-cols-3 gap-2 font-mono">
@@ -141,8 +159,12 @@ function LoginFormContent() {
               onClick={() => handleQuickFill("admin@opspulse.internal")}
               className="flex flex-col items-center justify-center p-2 border border-[#141414] bg-zinc-50 hover:bg-[#141414] hover:text-white transition-all text-left group cursor-pointer"
             >
-              <span className="text-[10px] font-bold text-red-600 group-hover:text-red-400">ADMIN</span>
-              <span className="text-[9px] text-[#141414]/60 group-hover:text-white/80 truncate max-w-full">Eleanor (Lead)</span>
+              <span className="text-[10px] font-bold text-red-600 group-hover:text-red-400">
+                {t("roleAdmin", "ADMIN")}
+              </span>
+              <span className="text-[9px] text-[#141414]/60 group-hover:text-white/80 truncate max-w-full">
+                {t("leadRole", "Eleanor (Lead)")}
+              </span>
             </button>
 
             <button
@@ -150,8 +172,12 @@ function LoginFormContent() {
               onClick={() => handleQuickFill("manager@opspulse.internal")}
               className="flex flex-col items-center justify-center p-2 border border-[#141414] bg-zinc-50 hover:bg-[#141414] hover:text-white transition-all text-left group cursor-pointer"
             >
-              <span className="text-[10px] font-bold text-[#F27D26] group-hover:text-[#F27D26]">MANAGER</span>
-              <span className="text-[9px] text-[#141414]/60 group-hover:text-white/80 truncate max-w-full">Marcus (TPM)</span>
+              <span className="text-[10px] font-bold text-[#F27D26] group-hover:text-[#F27D26]">
+                {t("roleManager", "MANAGER")}
+              </span>
+              <span className="text-[9px] text-[#141414]/60 group-hover:text-white/80 truncate max-w-full">
+                {t("tpmRole", "Marcus (TPM)")}
+              </span>
             </button>
 
             <button
@@ -159,15 +185,19 @@ function LoginFormContent() {
               onClick={() => handleQuickFill("member@opspulse.internal")}
               className="flex flex-col items-center justify-center p-2 border border-[#141414] bg-zinc-50 hover:bg-[#141414] hover:text-white transition-all text-left group cursor-pointer"
             >
-              <span className="text-[10px] font-bold text-sky-700 group-hover:text-sky-400">MEMBER</span>
-              <span className="text-[9px] text-[#141414]/60 group-hover:text-white/80 truncate max-w-full">Sarah (Eng)</span>
+              <span className="text-[10px] font-bold text-sky-700 group-hover:text-sky-400">
+                {t("roleMember", "MEMBER")}
+              </span>
+              <span className="text-[9px] text-[#141414]/60 group-hover:text-white/80 truncate max-w-full">
+                {t("engRole", "Sarah (Eng)")}
+              </span>
             </button>
           </div>
         </div>
       </div>
 
       <div className="text-center font-mono text-[10px] text-[#141414]/60">
-        OPSPULSE CORE // SYSTEM NODE #4829 // AUDIT STREAM ACTIVE
+        {t("footerNodeText", "OPSPULSE CORE // SYSTEM NODE #4829 // AUDIT STREAM ACTIVE")}
       </div>
     </div>
   );

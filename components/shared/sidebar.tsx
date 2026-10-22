@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Role } from "@prisma/client";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 interface SidebarProps {
   userRole?: Role;
@@ -26,24 +27,25 @@ interface SidebarProps {
 
 export function Sidebar({ userRole = Role.MEMBER, className, onNavigate }: SidebarProps) {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   const navigation = [
-    { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Projects", href: "/projects", icon: FolderKanban },
-    { name: "Task Operations", href: "/tasks", icon: CheckSquare },
-    { name: "Asset & File Library", href: "/files", icon: FileText },
+    { name: t("overview", "Overview"), href: "/dashboard", icon: LayoutDashboard },
+    { name: t("projects", "Projects"), href: "/projects", icon: FolderKanban },
+    { name: t("taskOperations", "Task Operations"), href: "/tasks", icon: CheckSquare },
+    { name: t("assetLibrary", "Asset & File Library"), href: "/files", icon: FileText },
     ...(userRole === Role.ADMIN
       ? [
           {
-            name: "Team Roster",
+            name: t("teamRoster", "Team Roster"),
             href: "/team",
             icon: Users,
             adminOnly: true,
           },
         ]
       : []),
-    { name: "Audit Stream", href: "/activity", icon: Activity },
-    { name: "Settings", href: "/settings", icon: Settings },
+    { name: t("auditStream", "Audit Stream"), href: "/activity", icon: Activity },
+    { name: t("settings", "Settings"), href: "/settings", icon: Settings },
   ];
 
   return (
@@ -78,7 +80,7 @@ export function Sidebar({ userRole = Role.MEMBER, className, onNavigate }: Sideb
               className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 bg-[#141414] hover:bg-zinc-800 text-[#E4E3E0] text-xs font-mono font-medium tracking-wide uppercase transition-colors"
             >
               <PlusCircle className="w-3.5 h-3.5 text-[#F27D26]" />
-              <span>+ Task</span>
+              <span>{t("addTask", "+ Task")}</span>
             </Link>
             <Link
               href="/projects/new"
@@ -86,7 +88,7 @@ export function Sidebar({ userRole = Role.MEMBER, className, onNavigate }: Sideb
               className="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 bg-white hover:bg-zinc-100 text-[#141414] border border-[#141414] text-xs font-mono font-medium tracking-wide uppercase transition-colors"
             >
               <FolderKanban className="w-3.5 h-3.5" />
-              <span>+ Project</span>
+              <span>{t("addProject", "+ Project")}</span>
             </Link>
           </div>
         </div>
@@ -95,7 +97,7 @@ export function Sidebar({ userRole = Role.MEMBER, className, onNavigate }: Sideb
       {/* Main Navigation links */}
       <div className="flex-1 overflow-y-auto p-3 space-y-1">
         <div className="px-2 py-1.5 text-[10px] font-mono font-semibold text-[#141414]/60 uppercase tracking-widest">
-          Workspace Modules
+          {t("workspaceModules", "Workspace Modules")}
         </div>
         {navigation.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
@@ -103,7 +105,7 @@ export function Sidebar({ userRole = Role.MEMBER, className, onNavigate }: Sideb
 
           return (
             <Link
-              key={item.name}
+              key={item.href}
               href={item.href}
               onClick={onNavigate}
               className={cn(
@@ -124,13 +126,13 @@ export function Sidebar({ userRole = Role.MEMBER, className, onNavigate }: Sideb
               {item.adminOnly && (
                 <span
                   className={cn(
-                    "text-[9px] font-mono px-1 py-0.5 border",
+                    "text-[9px] font-mono px-1 py-0.5 border uppercase",
                     isActive
                       ? "border-[#F27D26] text-[#F27D26]"
                       : "border-[#141414]/40 text-[#141414]/70"
                   )}
                 >
-                  ADMIN
+                  {t("roleAdmin", "ADMIN")}
                 </span>
               )}
             </Link>
@@ -143,9 +145,9 @@ export function Sidebar({ userRole = Role.MEMBER, className, onNavigate }: Sideb
         <div className="border border-[#141414] bg-white p-2 flex items-center justify-between text-xs text-[#141414]">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-[#F27D26]" />
-            <span className="font-mono text-[10px] tracking-tight font-semibold">OPSPULSE-NODE-01</span>
+            <span className="font-mono text-[10px] tracking-tight font-semibold">{t("systemNode", "OPSPULSE-NODE-01")}</span>
           </div>
-          <span className="text-[9px] font-mono px-1 bg-[#141414] text-white">ONLINE</span>
+          <span className="text-[9px] font-mono px-1 bg-[#141414] text-white uppercase">{t("online", "ONLINE")}</span>
         </div>
       </div>
     </aside>

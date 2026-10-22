@@ -19,6 +19,8 @@ import { Role } from "@prisma/client";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { LanguageSwitcher } from "./language-switcher";
+import { useLanguage } from "@/lib/i18n/language-context";
 
 interface HeaderProps {
   user: {
@@ -35,6 +37,7 @@ export function Header({ user }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [timeStr, setTimeStr] = useState<string>("");
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const updateTime = () => {
@@ -51,19 +54,19 @@ export function Header({ user }: HeaderProps) {
       case Role.ADMIN:
         return (
           <span className="font-mono text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 border border-red-600 bg-red-50 text-red-700">
-            ADMIN
+            {t("roleAdmin", "ADMIN")}
           </span>
         );
       case Role.MANAGER:
         return (
           <span className="font-mono text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 border border-[#141414] bg-[#141414] text-white">
-            MANAGER
+            {t("roleManager", "MANAGER")}
           </span>
         );
       case Role.MEMBER:
         return (
           <span className="font-mono text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 border border-[#141414] bg-white text-[#141414]">
-            MEMBER
+            {t("roleMember", "MEMBER")}
           </span>
         );
       default:
@@ -95,12 +98,12 @@ export function Header({ user }: HeaderProps) {
           <span className="text-[#141414]/50">/</span>
           <span className="font-bold tracking-tight text-[#141414]">OPSPULSE</span>
           <span className="text-[#141414]/50">/</span>
-          <span className="text-[#141414]/70">WORKSPACE-OPS</span>
+          <span className="text-[#141414]/70 uppercase">{t("workspaceOps", "WORKSPACE-OPS")}</span>
         </div>
       </div>
 
-      {/* Right Header Area: Live UTC + Role + User Profile */}
-      <div className="flex items-center gap-3 md:gap-4">
+      {/* Right Header Area: Live UTC + Language Switcher + Role + User Profile */}
+      <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
         {/* Live Technical UTC Clock */}
         {timeStr && (
           <div className="hidden lg:flex items-center gap-1.5 font-mono text-[11px] text-[#141414]/70 border border-[#141414]/20 px-2 py-0.5 bg-white">
@@ -108,6 +111,9 @@ export function Header({ user }: HeaderProps) {
             <span>{timeStr}</span>
           </div>
         )}
+
+        {/* Global Language Switcher */}
+        <LanguageSwitcher />
 
         {/* Role Indicator */}
         <div className="hidden xs:block">{getRoleBadge(user.role)}</div>
@@ -137,18 +143,18 @@ export function Header({ user }: HeaderProps) {
             <div className="p-1">
               <DropdownMenuItem asChild>
                 <Link href="/settings" className="flex items-center gap-2 px-2 py-1.5 hover:bg-[#141414] hover:text-white cursor-pointer transition-colors">
-                  <span>SETTINGS</span>
+                  <span className="uppercase">{t("settings", "SETTINGS")}</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/tasks" className="flex items-center gap-2 px-2 py-1.5 hover:bg-[#141414] hover:text-white cursor-pointer transition-colors">
-                  <span>MY ASSIGNED TASKS</span>
+                  <span className="uppercase">{t("myAssignedTasks", "MY ASSIGNED TASKS")}</span>
                 </Link>
               </DropdownMenuItem>
               {user.role === Role.ADMIN && (
                 <DropdownMenuItem asChild>
                   <Link href="/team" className="flex items-center gap-2 px-2 py-1.5 hover:bg-[#141414] hover:text-white cursor-pointer transition-colors">
-                    <span>MANAGE TEAM ROSTER</span>
+                    <span className="uppercase">{t("manageTeamRoster", "MANAGE TEAM ROSTER")}</span>
                   </Link>
                 </DropdownMenuItem>
               )}
@@ -161,7 +167,7 @@ export function Header({ user }: HeaderProps) {
                 }}
               >
                 <LogOut className="w-3.5 h-3.5 mr-1.5" />
-                <span>SIGN OUT</span>
+                <span className="uppercase">{t("signOut", "SIGN OUT")}</span>
               </DropdownMenuItem>
             </div>
           </DropdownMenuContent>

@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  env: {
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || "opspulse-internal-secret-session-key-32-chars-long",
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL || "http://localhost:3000",
+  },
   // Allow access to remote image placeholder.
   images: {
     remotePatterns: [

@@ -5,6 +5,7 @@ import { UserAvatar } from "@/components/shared/user-avatar";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Database, Server, Key, Lock, CheckCircle2 } from "lucide-react";
 import { Role } from "@prisma/client";
+import { LanguageSettingsCard } from "@/components/shared/language-settings-card";
 
 export default async function SettingsPage() {
   const user = await getCurrentUser();
@@ -14,14 +15,17 @@ export default async function SettingsPage() {
       <Breadcrumbs items={[{ label: "Settings & System" }]} />
 
       {/* Header */}
-      <div className="pb-2 border-b border-slate-200 dark:border-slate-800">
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+      <div className="pb-2 border-b border-[#141414]/20">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#141414] font-mono uppercase">
           Workspace & Profile Settings
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-          Review your operational role permissions and system environment parameters.
+        <p className="text-xs sm:text-sm text-[#141414]/60 mt-0.5">
+          Review your operational role permissions, language preferences, and system environment parameters.
         </p>
       </div>
+
+      {/* Language Preferences Card */}
+      <LanguageSettingsCard />
 
       {/* User Profile Card */}
       <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-2xs space-y-4">
